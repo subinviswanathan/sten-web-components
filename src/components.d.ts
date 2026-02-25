@@ -6,6 +6,13 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
+    interface MyButton {
+        "text": string;
+        /**
+          * @default 'primary'
+         */
+        "type": 'primary' | 'secondary';
+    }
     interface MyComponent {
         /**
           * The first name
@@ -22,6 +29,12 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLMyButtonElement extends Components.MyButton, HTMLStencilElement {
+    }
+    var HTMLMyButtonElement: {
+        prototype: HTMLMyButtonElement;
+        new (): HTMLMyButtonElement;
+    };
     interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
     }
     var HTMLMyComponentElement: {
@@ -29,33 +42,56 @@ declare global {
         new (): HTMLMyComponentElement;
     };
     interface HTMLElementTagNameMap {
+        "my-button": HTMLMyButtonElement;
         "my-component": HTMLMyComponentElement;
     }
 }
 declare namespace LocalJSX {
+    type OneOf<K extends string, PropT, AttrT = PropT> = { [P in K]: PropT } & { [P in `attr:${K}` | `prop:${K}`]?: never } | { [P in `attr:${K}`]: AttrT } & { [P in K | `prop:${K}`]?: never } | { [P in `prop:${K}`]: PropT } & { [P in K | `attr:${K}`]?: never };
+
+    interface MyButton {
+        "text": string;
+        /**
+          * @default 'primary'
+         */
+        "type"?: 'primary' | 'secondary';
+    }
     interface MyComponent {
         /**
           * The first name
          */
-        "first"?: string;
+        "first": string;
         /**
           * The last name
          */
-        "last"?: string;
+        "last": string;
         /**
           * The middle name
          */
-        "middle"?: string;
+        "middle": string;
     }
+
+    interface MyButtonAttributes {
+        "text": string;
+        "type": 'primary' | 'secondary';
+    }
+    interface MyComponentAttributes {
+        "first": string;
+        "middle": string;
+        "last": string;
+    }
+
     interface IntrinsicElements {
-        "my-component": MyComponent;
+        "my-button": Omit<MyButton, keyof MyButtonAttributes> & { [K in keyof MyButton & keyof MyButtonAttributes]?: MyButton[K] } & { [K in keyof MyButton & keyof MyButtonAttributes as `attr:${K}`]?: MyButtonAttributes[K] } & { [K in keyof MyButton & keyof MyButtonAttributes as `prop:${K}`]?: MyButton[K] } & OneOf<"text", MyButton["text"], MyButtonAttributes["text"]>;
+        "my-component": Omit<MyComponent, keyof MyComponentAttributes> & { [K in keyof MyComponent & keyof MyComponentAttributes]?: MyComponent[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `attr:${K}`]?: MyComponentAttributes[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `prop:${K}`]?: MyComponent[K] } & OneOf<"first", MyComponent["first"], MyComponentAttributes["first"]> & OneOf<"middle", MyComponent["middle"], MyComponentAttributes["middle"]> & OneOf<"last", MyComponent["last"], MyComponentAttributes["last"]>;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "my-button": LocalJSX.IntrinsicElements["my-button"] & JSXBase.HTMLAttributes<HTMLMyButtonElement>;
+            "my-component": LocalJSX.IntrinsicElements["my-component"] & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
         }
     }
 }
