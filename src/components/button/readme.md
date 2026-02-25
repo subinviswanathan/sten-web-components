@@ -13,6 +13,13 @@
 | `type`              | `type`    |             | `"primary" \| "secondary"` | `'primary'` |
 
 
+## Events
+
+| Event           | Description | Type                |
+| --------------- | ----------- | ------------------- |
+| `buttonClicked` |             | `CustomEvent<void>` |
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*
