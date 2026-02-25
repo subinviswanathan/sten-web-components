@@ -6,9 +6,19 @@ import { Component, Prop, h, EventEmitter, Event } from '@stencil/core';
   shadow: true,
 })
 export class MyButton {
+    /**
+   * Text for button
+   */
   @Prop() text!: string;
+
+  /**
+   * The type of button (primary or secondary)
+   */
   @Prop() type: 'primary' | 'secondary' = 'primary';
 
+  /**
+   * Emitted when the button is clicked
+   */
   @Event() buttonClicked!: EventEmitter<void>;
 
   onButtonClicked() {
